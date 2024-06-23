@@ -82,5 +82,3 @@ Edit this README.md to explain any specific instructions for setting up or using
 
 
 NB. we will ONLY run ```npm install```, ```npm run build-db```, and ```npm run start``` . We will NOT install additional packages to run your code and will NOT run additional build scripts. Be careful with any additional node dependencies that you use.
-
-# WZJ-CM2040-Blogging-Tool
