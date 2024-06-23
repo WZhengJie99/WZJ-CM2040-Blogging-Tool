@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reader Home</title>
+</head>
+<body>
+    <a>Reader Home Page</a>
+
+    <% if (author) { %>
+        <h1><%= author.blog_title %></h1>
+        <h2><%= author.blog_subtitle %></h2>
+        <h4>Author: <%= author.name %></h4>
+    <% } else { %>
+        <p>No author information available.</p>
+    <% } %>
+
+    <h2>Articles</h2>
+    <ul>
+        <% articles.forEach(article => { %>
+            <li>
+                <a href="/reader/article/<%= article.id %>">
+                    <%= article.title %>
+                <p><%= article.subtitle %></p>
+                <p><%= article.published_at %></p>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+</html>

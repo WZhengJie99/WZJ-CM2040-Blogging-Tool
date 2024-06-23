@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Read Article</title>
+</head>
+<body>
+    <a>Article Page</a>
+
+    <h1><%= article.title %></h1>
+    <h2><%= article.subtitle %></h2>
+    <p><%= article.content %></p>
+    <p>Created: <%= article.created_at %></p>
+    <p>Published: <%= article.published_at %></p>
+    <p>Likes: <%= article.likes %></p>
+
+    <form action="/reader/article/<%= article.id %>/like" method="post">
+        <button type="submit">Like</button>
+    </form><br>
+
+    <form action="/reader/article/<%= article.id %>/comment" method="post">
+        <input type="text" name="commenter_name" placeholder="Your name"><br><br>
+        <textarea name="comment" placeholder="Your comment"></textarea><br><br>
+        <button type="submit">Submit Comment</button>
+    </form>
+    <ul>
+        <% comments.forEach(comment => { %>
+            <li>
+                <%= comment.commenter_name %>: 
+                <%= comment.comment %><br>
+                <%= comment.created_at %>
+            </li>
+        <% }) %>
+    </ul>
+    <a href="/reader">Back to Reader Home Page</a>
+</body>
+</html>
