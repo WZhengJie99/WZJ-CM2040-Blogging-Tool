@@ -36,19 +36,26 @@ router.get('/', (req, res) => {
 router.get('/article/:id', (req, res) => {
     const articleId = req.params.id;
 
-    db.get("SELECT * FROM articles WHERE id = ?", [articleId], (err, article) => {
+    const incrementViewsSql = "UPDATE articles SET views = views + 1 WHERE id = ?";
+    db.run(incrementViewsSql, [articleId], (err) => {
         if (err) {
             return res.status(500).send(err.message);
         }
-        if (!article) {
-            return res.status(404).send("Article not found");
-        }
 
-        db.all("SELECT * FROM comments WHERE article_id = ?", [articleId], (err, comments) => {
+        db.get("SELECT * FROM articles WHERE id = ?", [articleId], (err, article) => {
             if (err) {
                 return res.status(500).send(err.message);
             }
-            res.render('reader-article', { article, comments });
+            if (!article) {
+                return res.status(404).send("Article not found");
+            }
+
+            db.all("SELECT * FROM comments WHERE article_id = ?", [articleId], (err, comments) => {
+                if (err) {
+                    return res.status(500).send(err.message);
+                }
+                res.render('reader-article', { article, comments });
+            });
         });
     });
 });
@@ -98,9 +105,16 @@ router.post('/article/:id/like', (req, res) => {
     const sql = "UPDATE articles SET likes = likes + 1 WHERE id = ?";
     db.run(sql, [articleId], function(err) {
         if (err) {
-            return res.status(500).send({ success: false, message: err.message });
+            return res.status(500).json({ success: false, message: err.message });
         }
-        res.redirect(`/reader/article/${articleId}`);
+
+        // Retrieve the updated like count
+        db.get("SELECT likes FROM articles WHERE id = ?", [articleId], (err, article) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: err.message });
+            }
+            res.json({ success: true, likes: article.likes });
+        });
     });
 });
 

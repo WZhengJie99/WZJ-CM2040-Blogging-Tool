@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS articles (
     published_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     author_id INTEGER,
     likes INTEGER DEFAULT 0,
+    views INTEGER DEFAULT 0,
     FOREIGN KEY(author_id) REFERENCES authors(id)
 );
 

@@ -64,7 +64,7 @@
             </tbody>
         </table>
 
-        <!-- Create new draft button -->
+        <!-- New draft button -->
         <br>
         <button onclick="createDraftArticle();">Create New Draft</button>
 
@@ -77,6 +77,7 @@
                     <th>Subtitle</th>
                     <th>Created</th>
                     <th>Published</th>
+                    <th>Views</th>
                     <th>Likes</th>
                     <th>Actions</th>
                 </tr>
@@ -89,6 +90,7 @@
                             <td><%= article.subtitle %></td>
                             <td><%= article.created_at %></td>
                             <td><%= article.published_at %></td>
+                            <td><%= article.views %></td>
                             <td><%= article.likes %></td>
                             <td>
                                 <button onclick="shareArticle(<%= article.id %>, '<%= article.title %>');">Share</button>
@@ -98,7 +100,7 @@
                     <% }) %>
                 <% } else { %>
                     <tr>
-                        <td colspan="6">No articles found.</td>
+                        <td colspan="7">No articles found.</td>
                     </tr>
                 <% } %>
             </tbody>
@@ -113,7 +115,7 @@
         
         <script>
             function editDraftArticle(id) {
-                window.location.href = `/author/draft-article/${id}`; // Updated URL pattern
+                window.location.href = `/author/draft-article/${id}`;
             }
 
             function publishDraftArticle(id) {
@@ -124,7 +126,7 @@
                 .then(data => {
                     if (data.success) {
                         console.log('Draft article published successfully');
-                        location.reload(); // Reload the page to see the changes
+                        location.reload();
                     } else {
                         console.error('Failed to publish draft article:', data.message);
                     }
@@ -140,11 +142,11 @@
             }
 
             function createDraftArticle() {
-                document.getElementById('title').value = 'New Draft'; // Example value, modify as needed
-                document.getElementById('subtitle').value = ''; // Example value, modify as needed
-                document.getElementById('content').value = ''; // Example value, modify as needed
+                document.getElementById('title').value = 'New Draft';
+                document.getElementById('subtitle').value = '';
+                document.getElementById('content').value = '';
 
-                document.getElementById('createDraftForm').submit(); // Submit the hidden form
+                document.getElementById('createDraftForm').submit();
             }
 
             function shareArticle(id, title) {

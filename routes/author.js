@@ -86,7 +86,7 @@ router.post('/draft-article', (req, res) => {
             author_id = row.id;
         } else {
             const createAuthorSql = "INSERT INTO authors (name, blog_title, blog_subtitle) VALUES (?, ?, ?)";
-            const defaultAuthor = ['Default Author', 'Default Blog Title', 'Default Blog Subtitle'];
+            const defaultAuthor = [' ', ' ', ' '];
             db.run(createAuthorSql, defaultAuthor, function(err) {
                 if (err) {
                     return res.status(500).json({ success: false, message: err.message });
@@ -174,8 +174,8 @@ router.post('/publish-draft/:id', (req, res) => {
 
         // Insert the draft article into the articles table
         const insertSql = `
-            INSERT INTO articles (title, subtitle, content, created_at, updated_at, author_id, likes)
-            VALUES (?, ?, ?, ?, ?, ?, 0)
+            INSERT INTO articles (title, subtitle, content, created_at, updated_at, author_id, views, likes)
+            VALUES (?, ?, ?, ?, ?, ?, 0, 0)
         `;
         db.run(insertSql, [
             draftArticle.title,
