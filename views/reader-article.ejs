@@ -1,22 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Read Article</title>
 </head>
+
 <body>
     <a>Article Page</a>
 
-    <h1><%= article.title %></h1>
-    <h2><%= article.subtitle %></h2>
-    <p><%= article.content %></p>
-    <p>Created: <%= article.created_at %></p>
-    <p>Published: <%= article.published_at %></p>
-    <p>Views: <%= article.views %></p>
-    <p>Likes: <span id="like-count"><%= article.likes %></span></p>
+    <h1>
+        <%= article.title %>
+    </h1>
+    <h2>
+        <%= article.subtitle %>
+    </h2>
+    <p>
+        <%= article.content %>
+    </p>
+    <p>Created: <%= article.created_at %>
+    </p>
+    <p>Published: <%= article.published_at %>
+    </p>
+    <p>Views: <%= article.views %>
+    </p>
+    <p>Likes: <span id="like-count">
+            <%= article.likes %>
+        </span></p>
 
     <form id="like-form" action="/reader/article/<%= article.id %>/like" method="post">
         <button type="button" id="like-button">Like</button>
     </form><br>
+    <button onclick="shareArticle(<%= article.id %>, '<%= article.title %>');">Share</button>
+    <br><br>
 
     <form action="/reader/article/<%= article.id %>/comment" method="post">
         <input type="text" name="commenter_name" placeholder="Your name"><br><br>
@@ -24,18 +39,18 @@
         <button type="submit">Submit Comment</button>
     </form>
     <ul>
-        <% comments.forEach(comment => { %>
+        <% comments.forEach(comment=> { %>
             <li>
-                <%= comment.commenter_name %>: 
-                <%= comment.comment %><br>
-                <%= comment.created_at %>
+                <%= comment.commenter_name %>:
+                    <%= comment.comment %><br>
+                        <%= comment.created_at %>
             </li>
-        <% }) %>
+            <% }) %>
     </ul>
     <a href="/reader">Back to Reader Home Page</a>
 
     <script>
-        document.getElementById('like-button').addEventListener('click', function() {
+        document.getElementById('like-button').addEventListener('click', function () {
             fetch('/reader/article/<%= article.id %>/like', {
                 method: 'POST',
                 headers: {
@@ -43,19 +58,40 @@
                     'Accept': 'application/json'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('like-count').innerText = data.likes;
-                } else {
-                    alert('Failed to like the article');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('like-count').innerText = data.likes;
+                    } else {
+                        alert('Failed to like the article');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
         });
+
+        function shareArticle(id, title) {
+            const url = `http://localhost:3000/reader/article/${id}`;
+            const shareText = `Check out this article: ${title}\n\n${url}`;
+            const sharePrompt = `Copy this link to share:\n${url}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: shareText,
+                    url: url,
+                }).then(() => {
+                    console.log('Article shared successfully');
+                }).catch((error) => {
+                    console.error('Error sharing article:', error);
+                });
+            } else {
+                prompt(sharePrompt, url);
+            }
+        }
     </script>
 </body>
+
 </html>
