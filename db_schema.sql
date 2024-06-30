@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS comments (
 
 -- Insert default data (if necessary here)
 
--- INSERT INTO authors (name, blog_title, blog_subtitle) VALUES ('Wong Zheng Jie', 'My Adventures', 'Hunting for Rabbits');
+INSERT INTO authors (name, blog_title, blog_subtitle) VALUES ('Wong Zheng Jie', 'My Adventures', 'Hunting for Rabbits');
 
 -- INSERT INTO draft_articles (title, subtitle, content, author_id) VALUES ('Draft 1', 'Next Town', 'A crime happened here!', 1);
 

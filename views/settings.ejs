@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Settings</title>
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <style>
+        form {
+            width: 20%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
 </head>
+
 <body>
-    <a>Settings Page</a>
-    
-    <form action="/author/settings" method="POST">
-        <label for="name">Author Name:</label>
-        <input type="text" id="name" name="name" value="<%= author ? author.name : '' %>" required>
-        <br><br>
-        <label for="blog_title">Blog Title:</label>
-        <input type="text" id="blog_title" name="blog_title" value="<%= author ? author.blog_title : '' %>" required>
-        <br><br>
-        <label for="blog_subtitle">Blog Subtitle:</label>
-        <input type="text" id="blog_subtitle" name="blog_subtitle" value="<%= author ? author.blog_subtitle : '' %>">
-        <br><br>
-        <button type="submit">Save</button>
-    </form><br>
-    <a href="/author">Back to Author Home</a>
+
+    <div class="header-links">
+        <a>Settings Page</a>
+        <div class="settings">
+            <a href="/author">Back to Author Home</a>
+        </div>
+    </div>
+
+    <br>
+    <div class="edit-author-settings">
+        <form action="/author/settings" method="POST">
+            <label for="name">Author Name:</label>
+            <input type="text" id="name" name="name" value="<%= author ? author.name : '' %>" required>
+            <br>
+            <label for="blog_title">Blog Title:</label>
+            <input type="text" id="blog_title" name="blog_title" value="<%= author ? author.blog_title : '' %>"
+                required>
+            <br>
+            <label for="blog_subtitle">Blog Subtitle:</label>
+            <input type="text" id="blog_subtitle" name="blog_subtitle"
+                value="<%= author ? author.blog_subtitle : '' %>">
+            <br>
+            <button type="submit">Save</button>
+        </form>
+    </div>
 </body>
+
 </html>

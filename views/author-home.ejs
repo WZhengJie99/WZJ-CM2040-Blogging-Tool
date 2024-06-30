@@ -1,180 +1,219 @@
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Author Home</title>
-        <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 10px;
-                text-align: left;
-                border: 1px solid #ddd;
-            }
-            th {
-                background-color: #f2f2f2;
-            }
-        </style>
-    </head>
-    <body>
-        <a>Author Home Page</a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-        <a href="/author/settings">Settings</a>
+<!DOCTYPE html>
+<html>
 
-        <% if (author) { %>
-            <h1><%= author.blog_title %></h1>
-            <h2><%= author.blog_subtitle %></h2>
-            <h4>Author: <%= author.name %></h4>
+<head>
+    <title>Author Home</title>
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <style>
+        h1,
+        h2,
+        h4 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-links">
+        <a>Author Home Page</a>
+        <div class="settings">
+            <a href="/author/settings">Settings</a>
+        </div>
+    </div>
+
+    <% if (author) { %>
+        <h1>
+            <%= author.blog_title %>
+        </h1>
+        <h2>
+            <%= author.blog_subtitle %>
+        </h2>
+        <h4>Author: <%= author.name %>
+        </h4>
         <% } else { %>
-            <p>No author found. Please create an author.</p>
-        <% } %>
+            <p class="center">No author found. Please create an author.</p>
+            <% } %>
+
+                <br>
+                <div class="author-table-container">
+                    <h2>Draft Articles</h2>
+
+                    <!-- New draft button -->
+
+                    <div class="button-container">
+                        <button onclick="createDraftArticle();">Create New Draft</button>
+                    </div><br>
+
+                    <table class="center">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Subtitle</th>
+                                <th>Created</th>
+                                <th>Last Modified</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (draft_articles && draft_articles.length> 0) { %>
+                                <% draft_articles.forEach(draft_article=> { %>
+                                    <tr>
+                                        <td><a href="/author/draft-article/<%= draft_article.id %>">
+                                                <%= draft_article.title %>
+                                            </a></td>
+                                        <td>
+                                            <%= draft_article.subtitle %>
+                                        </td>
+                                        <td>
+                                            <%= draft_article.created_at %>
+                                        </td>
+                                        <td>
+                                            <%= draft_article.updated_at %>
+                                        </td>
+                                        <td>
+                                            <button onclick="editDraftArticle(<%= draft_article.id %>);">Edit</button>
+                                            <button
+                                                onclick="publishDraftArticle(<%= draft_article.id %>);">Publish</button>
+                                            <button
+                                                onclick="deleteDraftArticle(<%= draft_article.id %>);">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="5">No draft articles found.</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
 
 
-        <h2>Draft Articles</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Subtitle</th>
-                    <th>Created</th>
-                    <th>Last Modified</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (draft_articles && draft_articles.length > 0) { %>
-                    <% draft_articles.forEach(draft_article => { %>
-                        <tr>
-                            <td><a href="/author/draft-article/<%= draft_article.id %>"><%= draft_article.title %></a></td>
-                            <td><%= draft_article.subtitle %></td>
-                            <td><%= draft_article.created_at %></td>
-                            <td><%= draft_article.updated_at %></td>
-                            <td>
-                                <button onclick="editDraftArticle(<%= draft_article.id %>);">Edit</button>
-                                <button onclick="publishDraftArticle(<%= draft_article.id %>);">Publish</button>
-                                <button onclick="deleteDraftArticle(<%= draft_article.id %>);">Delete</button>
-                            </td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="5">No draft articles found.</td>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
 
-        <!-- New draft button -->
-        <br>
-        <button onclick="createDraftArticle();">Create New Draft</button>
+                <!-- Published Articles -->
+                <div class="author-table-container">
+                    <h2>Published Articles</h2>
+                    <table class="center">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Subtitle</th>
+                                <th>Created</th>
+                                <th>Published</th>
+                                <th>Views</th>
+                                <th>Likes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (articles && articles.length> 0) { %>
+                                <% articles.forEach(article=> { %>
+                                    <tr>
+                                        <td><a href="/reader/article/<%= article.id %>">
+                                                <%= article.title %>
+                                            </a></td>
+                                        <td>
+                                            <%= article.subtitle %>
+                                        </td>
+                                        <td>
+                                            <%= article.created_at %>
+                                        </td>
+                                        <td>
+                                            <%= article.published_at %>
+                                        </td>
+                                        <td>
+                                            <%= article.views %>
+                                        </td>
+                                        <td>
+                                            <%= article.likes %>
+                                        </td>
+                                        <td>
+                                            <button
+                                                onclick="shareArticle(<%= article.id %>, '<%= article.title %>');">Share</button>
+                                            <button onclick="deleteArticle(<%= article.id %>);">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="7">No articles found.</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
 
-        <!-- Published Articles -->
-        <h2>Published Articles</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Subtitle</th>
-                    <th>Created</th>
-                    <th>Published</th>
-                    <th>Views</th>
-                    <th>Likes</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (articles && articles.length > 0) { %>
-                    <% articles.forEach(article => { %>
-                        <tr>
-                            <td><a href="/reader/article/<%= article.id %>"><%= article.title %></a></td>
-                            <td><%= article.subtitle %></td>
-                            <td><%= article.created_at %></td>
-                            <td><%= article.published_at %></td>
-                            <td><%= article.views %></td>
-                            <td><%= article.likes %></td>
-                            <td>
-                                <button onclick="shareArticle(<%= article.id %>, '<%= article.title %>');">Share</button>
-                                <button onclick="deleteArticle(<%= article.id %>);">Delete</button>
-                            </td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="7">No articles found.</td>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
+                <br>
+                <!-- Hidden form for creating a new draft -->
+                <form id="createDraftForm" style="display: none;" action="/author/draft-article" method="POST">
+                    <input type="hidden" id="title" name="title">
+                    <input type="hidden" id="subtitle" name="subtitle">
+                    <input type="hidden" id="content" name="content">
+                </form>
 
-        <!-- Hidden form for creating a new draft -->
-        <form id="createDraftForm" style="display: none;" action="/author/draft-article" method="POST">
-            <input type="hidden" id="title" name="title">
-            <input type="hidden" id="subtitle" name="subtitle">
-            <input type="hidden" id="content" name="content">
-        </form>
-        
-        <script>
-            function editDraftArticle(id) {
-                window.location.href = `/author/draft-article/${id}`;
-            }
-
-            function publishDraftArticle(id) {
-                fetch(`/author/publish-draft/${id}`, {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Draft article published successfully');
-                        location.reload();
-                    } else {
-                        console.error('Failed to publish draft article:', data.message);
+                <script>
+                    function editDraftArticle(id) {
+                        window.location.href = `/author/draft-article/${id}`;
                     }
-                })
-                .catch(error => console.error('Error publishing draft article:', error));
-            }
 
-            function deleteDraftArticle(id) {
-                fetch(`/author/delete-draft/${id}`, { method: 'POST' })
-                .then(response => response.json())
-                .then(data => location.reload())
-                .catch(error => console.error('Error deleting draft article:', error));
-            }
+                    function publishDraftArticle(id) {
+                        fetch(`/author/publish-draft/${id}`, {
+                            method: 'POST'
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    console.log('Draft article published successfully');
+                                    location.reload();
+                                } else {
+                                    console.error('Failed to publish draft article:', data.message);
+                                }
+                            })
+                            .catch(error => console.error('Error publishing draft article:', error));
+                    }
 
-            function createDraftArticle() {
-                document.getElementById('title').value = 'New Draft';
-                document.getElementById('subtitle').value = '';
-                document.getElementById('content').value = '';
+                    function deleteDraftArticle(id) {
+                        fetch(`/author/delete-draft/${id}`, { method: 'POST' })
+                            .then(response => response.json())
+                            .then(data => location.reload())
+                            .catch(error => console.error('Error deleting draft article:', error));
+                    }
 
-                document.getElementById('createDraftForm').submit();
-            }
+                    function createDraftArticle() {
+                        document.getElementById('title').value = 'New Draft';
+                        document.getElementById('subtitle').value = '';
+                        document.getElementById('content').value = '';
 
-            function shareArticle(id, title) {
-                const url = `http://localhost:3000/reader/article/${id}`;
-                const shareText = `Check out this article: ${title}\n\n${url}`;
-                const sharePrompt = `Copy this link to share:\n${url}`;
+                        document.getElementById('createDraftForm').submit();
+                    }
 
-                if (navigator.share) {
-                    navigator.share({
-                        title: title,
-                        text: shareText,
-                        url: url,
-                    }).then(() => {
-                        console.log('Article shared successfully');
-                    }).catch((error) => {
-                        console.error('Error sharing article:', error);
-                    });
-                } else {
-                    prompt(sharePrompt, url);
-                }
-            }
+                    function shareArticle(id, title) {
+                        const url = `http://localhost:3000/reader/article/${id}`;
+                        const shareText = `Check out this article: ${title}\n\n${url}`;
+                        const sharePrompt = `Copy this link to share:\n${url}`;
 
-            function deleteArticle(id) {
-                fetch(`/author/delete/${id}`, { method: 'POST' })
-                    .then(response => response.json())
-                    .then(data => location.reload());
-            }
+                        if (navigator.share) {
+                            navigator.share({
+                                title: title,
+                                text: shareText,
+                                url: url,
+                            }).then(() => {
+                                console.log('Article shared successfully');
+                            }).catch((error) => {
+                                console.error('Error sharing article:', error);
+                            });
+                        } else {
+                            prompt(sharePrompt, url);
+                        }
+                    }
 
-        </script>
-    </body>
+                    function deleteArticle(id) {
+                        fetch(`/author/delete/${id}`, { method: 'POST' })
+                            .then(response => response.json())
+                            .then(data => location.reload());
+                    }
+
+                </script>
+</body>
+
 </html>

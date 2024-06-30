@@ -2,6 +2,14 @@
 <html>
 <head>
     <title>Reader Home</title>
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <style>
+        h1,
+        h2,
+        h4 {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <a>Reader Home Page</a>
@@ -14,8 +22,9 @@
         <p>No author information available.</p>
     <% } %>
 
-    <h2>Articles</h2>
-    <ul>
+    <br>
+    <h2>Articles</h2><br>
+    <ul class="home-horizontal-list">
         <% articles.forEach(article => { %>
             <li>
                 <a href="/reader/article/<%= article.id %>">

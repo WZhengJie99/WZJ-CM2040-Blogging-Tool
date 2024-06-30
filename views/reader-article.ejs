@@ -3,51 +3,77 @@
 
 <head>
     <title>Read Article</title>
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <style>
+        h1,
+        h2 {
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
-    <a>Article Page</a>
+    <div class="header-links">
+        <a>Article Page</a>
+        <div class="settings">
+            <a href="/reader">Reader Home Page</a>
+        </div>
+    </div>
+    <div class="article-overall">
+        <h1>
+            <%= article.title %>
+        </h1>
+        <h2>
+            <%= article.subtitle %>
+        </h2>
+        <div class="article-content">
+            <%= article.content %>
+        </div>
+        <br>
 
-    <h1>
-        <%= article.title %>
-    </h1>
-    <h2>
-        <%= article.subtitle %>
-    </h2>
-    <p>
-        <%= article.content %>
-    </p>
-    <p>Created: <%= article.created_at %>
-    </p>
-    <p>Published: <%= article.published_at %>
-    </p>
-    <p>Views: <%= article.views %>
-    </p>
-    <p>Likes: <span id="like-count">
-            <%= article.likes %>
-        </span></p>
+        <div class="article-meta">
+            <div id="created-publish-dates">
+                <p>Created: <%= article.created_at %>
+                </p>
+                <p>Published: <%= article.published_at %>
+                </p>
+            </div>
+            <div id="like-view-counts">
+            <p>Likes: <span id="like-count">
+                    <%= article.likes %>
+                </span></p>
+            <p>Views: <%= article.views %>
+            </p>
+            </div>
+        </div>
 
-    <form id="like-form" action="/reader/article/<%= article.id %>/like" method="post">
-        <button type="button" id="like-button">Like</button>
-    </form><br>
-    <button onclick="shareArticle(<%= article.id %>, '<%= article.title %>');">Share</button>
-    <br><br>
+        <div class="buttons-container">
+            <form id="like-form" action="/reader/article/<%= article.id %>/like" method="post">
+                <button type="button" id="like-button">Like</button>
+            </form>
 
-    <form action="/reader/article/<%= article.id %>/comment" method="post">
-        <input type="text" name="commenter_name" placeholder="Your name"><br><br>
-        <textarea name="comment" placeholder="Your comment"></textarea><br><br>
-        <button type="submit">Submit Comment</button>
-    </form>
-    <ul>
-        <% comments.forEach(comment=> { %>
-            <li>
-                <%= comment.commenter_name %>:
-                    <%= comment.comment %><br>
-                        <%= comment.created_at %>
-            </li>
-            <% }) %>
-    </ul>
-    <a href="/reader">Back to Reader Home Page</a>
+            <button onclick="shareArticle(<%= article.id %>, '<%= article.title %>');">Share</button>
+        </div>
+
+        <p>Comments:</p>
+        <form action="/reader/article/<%= article.id %>/comment" method="post">
+            <input type="text" name="commenter_name" placeholder="Your name"><br><br>
+            <textarea name="comment" placeholder="Your comment"></textarea><br><br>
+            <button type="submit">Submit Comment</button>
+        </form>
+        <br>
+        <ul class="horizontal-list">
+            <% comments.forEach(comment=> { %>
+                <li>
+                    <%= comment.commenter_name %>:
+                        <%= comment.comment %><br>
+                            <%= comment.created_at %>
+                </li>
+                <% }) %>
+        </ul>
+        <br>
+        <a href="/reader">Back to Reader Home Page</a>
+    </div>
 
     <script>
         document.getElementById('like-button').addEventListener('click', function () {
