@@ -15,7 +15,13 @@
     </style>
 </head>
 <body>
-    <a>Edit Draft Article</a>
+    
+    <div class="header-links">
+        <a>Edit Draft Article</a>
+        <div class="settings">
+            <a href="/author">Back to Author Home</a>
+        </div>
+    </div>
 
     <p>Created: <%= draft_article.created_at %></p>
     <p>Last Updated: <%= draft_article.updated_at %></p>
@@ -37,6 +43,5 @@
         <button type="submit">Save Changes</button>
     </form><br>
     
-    <a href="/author">Back to Author Home</a>
 </body>
 </html>

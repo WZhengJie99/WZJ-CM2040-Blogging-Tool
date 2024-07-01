@@ -34,12 +34,12 @@ table.center th, table.center td {
 /* Adjust widths as needed */
 table.center th:nth-child(1),
 table.center td:nth-child(1) {
-    width: 15%; /* Title column */
+    width: 15%; /* Title */
 }
 
 table.center th:nth-child(2),
 table.center td:nth-child(2) {
-    width: 10%; /* Subtitle column */
+    width: 10%; /* Subtitle */
 }
 
 table.center th:nth-child(3),
@@ -50,12 +50,12 @@ table.center th:nth-child(5),
 table.center td:nth-child(5),
 table.center th:nth-child(6),
 table.center td:nth-child(6) {
-    width: 15%; /* Adjust other columns equally */
+    width: 15%;
 }
 
 table.center th:nth-child(7),
 table.center td:nth-child(7) {
-    width: 15%; /* Actions column */
+    width: 15%; /* Actions */
 }
 
 table.center td {
@@ -113,7 +113,7 @@ textarea {
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 4px;
-    resize: vertical; /* Allow vertical resizing of the textarea */
+    resize: vertical;
 }
 
 /* reader-article.ejs */
@@ -124,12 +124,17 @@ ul.horizontal-list {
     padding: 0;
     margin: 0;
     justify-content: flex-end;
+    overflow: auto;
+    text-overflow: ellipsis;
 }
 
 ul.horizontal-list li {
+    width: 200px;
     display: inline-block;
     margin-left: 10px;
-    margin-right: 25px;
+    margin-right: 30px;
+    padding: 15px;
+    border-style: solid;
 }
 .article-overall{
     width: 90%;
@@ -173,7 +178,7 @@ ul.horizontal-list li {
 }
 
 .buttons-container button {
-    margin-right: 45px;
+    margin-right: 40px;
 }
 
 /* reader-home.ejs.ejs */
@@ -187,4 +192,6 @@ ul.home-horizontal-list li {
     display: inline-block;
     margin-left: 10px;
     margin-right: 25px;
+    padding: 15px;
+    border-style: solid;
 }
