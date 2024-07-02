@@ -1,30 +1,32 @@
 <!-- draft-article.ejs -->
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Edit Draft Article</title>
+    <title>Draft Article Page</title>
     <link rel="stylesheet" type="text/css" href="/main.css">
     <style>
         form {
-            max-width: 600px;
+            max-width: 80%;
             margin: 0 auto;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+
+        #content {
+            height: 200px;
+        }
     </style>
 </head>
+
 <body>
-    
     <div class="header-links">
-        <a>Edit Draft Article</a>
+        <a>Draft Article Page</a>
         <div class="settings">
             <a href="/author">Back to Author Home</a>
         </div>
     </div>
-
-    <p>Created: <%= draft_article.created_at %></p>
-    <p>Last Updated: <%= draft_article.updated_at %></p>
 
     <form id="editDraftForm" action="/author/edit-draft/<%= draft_article.id %>" method="POST">
         <div>
@@ -40,8 +42,15 @@
             <textarea id="content" name="content"><%= draft_article.content %></textarea>
         </div><br>
 
-        <button type="submit">Save Changes</button>
-    </form><br>
-    
+        <div class="form-actions">
+            <button id="save-changes" type="submit">Save Changes</button>
+        </div>
+        <div class="draft-created-last-updated">
+            <p>Created: <%= draft_article.created_at %>
+            </p>
+            <p>Last Updated: <%= draft_article.updated_at %>
+            </p>
+        </div>
+    </form>
 </body>
 </html>

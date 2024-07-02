@@ -116,6 +116,20 @@ textarea {
     resize: vertical;
 }
 
+#editDraftForm {
+    margin-top: 50px;
+}
+
+.draft-created-last-updated {
+    margin-top: -60px;
+    float: left;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
 /* reader-article.ejs */
 ul.horizontal-list {
     display: flex;
