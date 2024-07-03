@@ -36,7 +36,8 @@ app.use(session({
 
 // Handle requests to the home page 
 app.get('/', (req, res) => {
-    res.render('home');
+    const userLoggedIn = req.session.userId ? true : false;
+    res.render('home', { userLoggedIn });
 });
 
 // Author Routes

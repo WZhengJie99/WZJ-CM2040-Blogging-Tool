@@ -17,12 +17,9 @@
 </head>
 
 <body>
-
-    <div class="header-links">
-        <a>Settings Page</a>
-        <div class="settings">
-            <a href="/author">Back to Author Home</a>
-        </div>
+    <a class="auth-link">Settings Page</a>
+    <div class="settings">
+        <button onclick="window.location.href='/author'">Back to Author Home</button>
     </div>
 
     <br>
@@ -36,8 +33,8 @@
                 required>
             <br>
             <label for="blog_subtitle">Blog Subtitle:</label>
-            <input type="text" id="blog_subtitle" name="blog_subtitle"
-                value="<%= author ? author.blog_subtitle : '' %>" required>
+            <input type="text" id="blog_subtitle" name="blog_subtitle" value="<%= author ? author.blog_subtitle : '' %>"
+                required>
             <br>
             <button type="submit">Save</button>
         </form>

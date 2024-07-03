@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const db = global.db; // Ensure db connection is properly set up
 
 // Reader Home Page
 router.get('/', (req, res) => {
@@ -22,10 +23,7 @@ router.get('/', (req, res) => {
         })
     ])
     .then(([articles, author]) => {
-        res.render('reader-home', {
-            articles,
-            author: author || null
-        });
+        res.render('reader-home', { articles, author: author || null });
     })
     .catch(err => {
         res.status(500).send(err.message);
@@ -50,11 +48,16 @@ router.get('/article/:id', (req, res) => {
                 return res.status(404).send("Article not found");
             }
 
-            db.all("SELECT * FROM comments WHERE article_id = ?", [articleId], (err, comments) => {
+            db.get("SELECT * FROM authors WHERE id = ?", [article.author_id], (err, author) => {
                 if (err) {
                     return res.status(500).send(err.message);
                 }
-                res.render('reader-article', { article, comments });
+                db.all("SELECT * FROM comments WHERE article_id = ? ORDER BY created_at DESC", [articleId], (err, comments) => {
+                    if (err) {
+                        return res.status(500).send(err.message);
+                    }
+                    res.render('reader-article', { article, authors: author, comments });
+                });
             });
         });
     });
@@ -65,9 +68,9 @@ router.post('/article/:id/comment', (req, res) => {
     const articleId = req.params.id;
     const { commenter_name, comment } = req.body;
 
-    // if (!commenter_name || !comment) {
-    //     return res.status(400).send('Name and comment are required');
-    // }
+    if (!commenter_name || !comment) {
+        return res.status(400).send('Name and comment are required');
+    }
 
     const sql = "INSERT INTO comments (article_id, commenter_name, comment, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
     db.run(sql, [articleId, commenter_name, comment], function(err) {
@@ -75,26 +78,6 @@ router.post('/article/:id/comment', (req, res) => {
             return res.status(500).send({ success: false, message: err.message });
         }
         res.redirect(`/reader/article/${articleId}`);
-    });
-});
-
-router.get('/article/:id', (req, res) => {
-    const articleId = req.params.id;
-
-    db.get("SELECT * FROM articles WHERE id = ?", [articleId], (err, article) => {
-        if (err) {
-            return res.status(500).send(err.message);
-        }
-        if (!article) {
-            return res.status(404).send('Article not found');
-        }
-
-        db.all("SELECT * FROM comments WHERE article_id = ? ORDER BY created_at DESC", [articleId], (err, comments) => {
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-            res.render('article', { article, comments });
-        });
     });
 });
 

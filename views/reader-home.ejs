@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-    <a>Reader Home Page</a>
+    <a class="auth-link">Reader Home Page</a>
 
     <% if (author) { %>
         <h1><%= author.blog_title %></h1>
@@ -27,7 +27,7 @@
     <ul class="home-horizontal-list">
         <% articles.forEach(article => { %>
             <li>
-                <a href="/reader/article/<%= article.id %>">
+                <a class="link" href="/reader/article/<%= article.id %>">
                     <%= article.title %>
                 <p><%= article.subtitle %></p>
                 <p><%= article.published_at %></p>

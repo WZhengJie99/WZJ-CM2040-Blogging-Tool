@@ -2,41 +2,74 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const { body, validationResult } = require('express-validator');
-const db = global.db;
+const sqlite3 = require('sqlite3').verbose();
 
-router.get('/', (req, res) => {
-    res.render('author-auth');
-});
-
-// Function to hash passwords
 function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) {
     const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
     return { salt, hash };
 }
 
-// Function to validate passwords
 function validatePassword(password, hash, salt) {
     const hashVerify = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
     return hash === hashVerify;
 }
 
+const { salt, hash } = hashPassword('Admin1');
+db.serialize(() => {
+    // Check if 'Admin1' already exists
+    db.get(`SELECT * FROM users WHERE username = 'Admin1'`, [], (err, existingUser) => {
+        if (err) {
+            return console.error(err.message);
+        }
+        // If 'Admin1' already exists, do nothing
+        if (existingUser) {
+            return;
+        }
+        // If 'Admin1' does not exist, insert the new user
+        db.run(`INSERT INTO users (username, email, password_hash, salt) VALUES (?, ?, ?, ?)`, 
+            ['Admin1', 'Admin1@gmail.com', hash, salt], function(err) {
+            if (err) {
+                return console.error(err.message);
+            }
+        });
+    });
+});
+
+router.get('/', (req, res) => {
+    if (req.session.userId) {
+        res.redirect('/author');
+    } else {
+        res.render('author-auth');
+    }
+});
+
 // Registration route
 router.post('/register', [
     body('username').notEmpty().withMessage('Username is required'),
+    body('email').isEmail().withMessage('Valid email is required'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
 ], (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { username, password } = req.body;
-    const { salt, hash } = hashPassword(password);
-
-    db.run(`INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?)`, [username, hash, salt], function(err) {
+    const { username, email, password } = req.body;
+    db.get(`SELECT * FROM users WHERE email = ?`, [email], (err, existingUser) => {
         if (err) {
             return res.status(500).json({ error: 'Database error' });
         }
-        res.status(200).json({ message: 'User registered successfully' });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+
+        const { salt, hash } = hashPassword(password);
+        db.run(`INSERT INTO users (username, email, password_hash, salt) VALUES (?, ?, ?, ?)`, 
+            [username, email, hash, salt], function(err) {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
+            res.status(200).json({ message: 'User registered successfully' });
+        });
     });
 });
 

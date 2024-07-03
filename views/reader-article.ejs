@@ -13,12 +13,11 @@
 </head>
 
 <body>
-    <div class="header-links">
-        <a>Article Page</a>
-        <div class="settings">
-            <a href="/reader">Reader Home Page</a>
-        </div>
+    <a class="auth-link">Article Page</a>
+    <div class="settings">
+        <button onclick="window.location.href='/reader'">Reader Home Page</button>
     </div>
+
     <div class="article-overall">
         <h1>
             <%= article.title %>
@@ -31,6 +30,8 @@
         </div>
         <br>
 
+        <p>By: <%= authors.name %>
+        </p>
         <div class="article-meta">
             <div id="created-publish-dates">
                 <p>Created: <%= article.created_at %>
@@ -39,11 +40,11 @@
                 </p>
             </div>
             <div id="like-view-counts">
-            <p>Likes: <span id="like-count">
-                    <%= article.likes %>
-                </span></p>
-            <p>Views: <%= article.views %>
-            </p>
+                <p>Likes: <span id="like-count">
+                        <%= article.likes %>
+                    </span></p>
+                <p>Views: <%= article.views %>
+                </p>
             </div>
         </div>
 
@@ -72,7 +73,7 @@
                 <% }) %>
         </ul>
         <br>
-        <a href="/reader">Back to Reader Home Page</a>
+        <a class="link" href="/reader">Back to Reader Home Page</a>
     </div>
 
     <script>

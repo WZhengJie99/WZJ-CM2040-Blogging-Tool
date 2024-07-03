@@ -11,10 +11,35 @@ button:hover {
     background-color: #0056b3;
 }
 
+.auth-link {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 18px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link {
+    display: block;
+    margin-top: 20px;
+    color: #007bff;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
 /* home.ejs */
-#home-links {
+.home-links {
     text-align: center;
     margin-top: 20px;
+}
+
+.home-links .link {
+    display: inline-block;
 }
 
 /* author-home.ejs */
@@ -81,12 +106,6 @@ table a {
 .button-container {
     display: flex;
     justify-content: flex-start;
-}
-
-.header-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .settings {
@@ -208,4 +227,39 @@ ul.home-horizontal-list li {
     margin-right: 25px;
     padding: 15px;
     border-style: solid;
+}
+
+/* author.ejs */
+body.author-auth-page {
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    width: 400px;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"] {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
 }

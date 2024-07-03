@@ -1,56 +1,65 @@
 const express = require('express');
 const router = express.Router();
 
+// Middleware to check if user is authenticated
 function checkAuth(req, res, next) {
     if (req.session && req.session.userId) {
         next();
     } else {
-        res.redirect('author-auth');
+        res.redirect('/authentication');
     }
 }
 
-router.get('/', checkAuth, (req, res) => {
-    db.all("SELECT * FROM articles WHERE author_id = ? ORDER BY created_at DESC", [req.session.userId], (err, articles) => {
+// Middleware to fetch author's articles and drafts
+function fetchAuthorData(req, res, next) {
+    const userId = req.session.userId;
+
+    // Fetch articles and drafts
+    db.all("SELECT * FROM articles WHERE author_id = ? ORDER BY created_at DESC", [userId], (err, articles) => {
         if (err) {
             return res.status(500).send(err.message);
         }
-        db.all("SELECT * FROM draft_articles WHERE author_id = ? ORDER BY created_at DESC", [req.session.userId], (err, draft_articles) => {
+        db.all("SELECT * FROM draft_articles WHERE author_id = ? ORDER BY created_at DESC", [userId], (err, draft_articles) => {
             if (err) {
                 return res.status(500).send(err.message);
             }
-            db.get("SELECT * FROM authors WHERE id = ?", [req.session.userId], (err, author) => {
+            db.get("SELECT * FROM authors WHERE id = ?", [userId], (err, author) => {
                 if (err) {
                     return res.status(500).send(err.message);
                 }
-                res.render('author-home', { articles, draft_articles, author });
+                db.get("SELECT * FROM users WHERE id = ?", [userId], (err, user) => {
+                    if (err) {
+                        return res.status(500).send(err.message);
+                    }
+                    req.articles = articles;
+                    req.draft_articles = draft_articles;
+                    req.author = author;
+                    req.user = user; // Make sure to add user to the request object
+                    next(); // Call next to proceed to the next middleware or route handler
+                });
             });
         });
     });
+}
+
+// Routes requiring authentication
+router.get('/', checkAuth, fetchAuthorData, (req, res) => {
+    res.render('author-home', { articles: req.articles, draft_articles: req.draft_articles, author: req.author, user: req.user });
 });
 
-// Author Home Page
-router.get('/', (req, res) => {
-    db.all("SELECT * FROM articles WHERE author_id = ? ORDER BY created_at DESC", [1], (err, articles) => {
+router.get('/logout', (req, res) => {
+    req.session.destroy(err => {
         if (err) {
-            return res.status(500).send(err.message);
+            console.error('Error destroying session:', err);
+            return res.status(500).json({ error: 'Failed to logout' });
         }
-        db.all("SELECT * FROM draft_articles WHERE author_id = ? ORDER BY created_at DESC", [1], (err, draft_articles) => {
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-            db.get("SELECT * FROM authors WHERE id = ?", [1], (err, author) => {
-                if (err) {
-                    return res.status(500).send(err.message);
-                }
-                res.render('author-home', { articles, draft_articles, author });
-            });
-        });
+        res.redirect('/authentication'); // Redirect to the login or home page after logout
     });
 });
 
 // Settings Page
 router.get('/settings', (req, res) => {
-    db.get("SELECT * FROM authors WHERE id = ?", [1], (err, author) => {
+    db.get("SELECT * FROM authors WHERE id = ?", [req.session.userId], (err, author) => {
         if (err) {
             return res.status(500).send(err.message);
         }
@@ -60,7 +69,7 @@ router.get('/settings', (req, res) => {
 
 router.post('/settings', (req, res) => {
     const { name, blog_title, blog_subtitle } = req.body;
-    db.run("UPDATE authors SET name = ?, blog_title = ?, blog_subtitle = ? WHERE id = ?", [name, blog_title, blog_subtitle, 1], function(err) {
+    db.run("UPDATE authors SET name = ?, blog_title = ?, blog_subtitle = ? WHERE id = ?", [name, blog_title, blog_subtitle, req.session.userId], function (err) {
         if (err) {
             return res.status(500).send(err.message);
         }
@@ -71,7 +80,7 @@ router.post('/settings', (req, res) => {
 // Delete Article
 router.post('/delete/:id', (req, res) => {
     const articleId = req.params.id;
-    
+
     // Start a transaction
     db.serialize(() => {
         db.run("BEGIN TRANSACTION");
@@ -86,7 +95,7 @@ router.post('/delete/:id', (req, res) => {
 
             // Delete the article
             const deleteArticleSql = "DELETE FROM articles WHERE id = ?";
-            db.run(deleteArticleSql, [articleId], function(err) {
+            db.run(deleteArticleSql, [articleId], function (err) {
                 if (err) {
                     db.run("ROLLBACK");
                     return res.status(500).json({ success: false, message: err.message });
@@ -102,8 +111,8 @@ router.post('/delete/:id', (req, res) => {
 // Create Draft Article
 router.post('/draft-article', (req, res) => {
     const { title, subtitle, content } = req.body;
-    const authorSql = "SELECT id FROM authors LIMIT 1";
-    db.get(authorSql, [], (err, row) => {
+    const authorSql = "SELECT id FROM authors WHERE id = ?";
+    db.get(authorSql, [req.session.userId], (err, row) => {
         if (err) {
             return res.status(500).json({ success: false, message: err.message });
         }
@@ -114,7 +123,7 @@ router.post('/draft-article', (req, res) => {
         } else {
             const createAuthorSql = "INSERT INTO authors (name, blog_title, blog_subtitle) VALUES (?, ?, ?)";
             const defaultAuthor = [' ', ' ', ' '];
-            db.run(createAuthorSql, defaultAuthor, function(err) {
+            db.run(createAuthorSql, defaultAuthor, function (err) {
                 if (err) {
                     return res.status(500).json({ success: false, message: err.message });
                 }
@@ -130,7 +139,7 @@ router.post('/draft-article', (req, res) => {
                 INSERT INTO draft_articles (title, subtitle, content, author_id, created_at, updated_at)
                 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             `;
-            db.run(sql, [title, subtitle, content, author_id], function(err) {
+            db.run(sql, [title, subtitle, content, author_id], function (err) {
                 if (err) {
                     return res.status(500).json({ success: false, message: err.message });
                 }
@@ -161,7 +170,7 @@ router.get('/draft-article/:id', (req, res) => {
 router.post('/delete-draft/:id', (req, res) => {
     const draftArticleId = req.params.id;
 
-    db.run("DELETE FROM draft_articles WHERE id = ?", [draftArticleId], function(err) {
+    db.run("DELETE FROM draft_articles WHERE id = ?", [draftArticleId], function (err) {
         if (err) {
             return res.status(500).send({ success: false, message: err.message });
         }
@@ -178,7 +187,7 @@ router.post('/edit-draft/:id', (req, res) => {
         SET title = ?, subtitle = ?, content = ?, updated_at = CURRENT_TIMESTAMP 
         WHERE id = ?
     `;
-    db.run(sql, [title, subtitle, content, draftArticleId], function(err) {
+    db.run(sql, [title, subtitle, content, draftArticleId], function (err) {
         if (err) {
             return res.status(500).json({ success: false, message: err.message });
         }
@@ -211,14 +220,14 @@ router.post('/publish-draft/:id', (req, res) => {
             draftArticle.created_at,
             draftArticle.updated_at,
             draftArticle.author_id
-        ], function(err) {
+        ], function (err) {
             if (err) {
                 return res.status(500).json({ success: false, message: err.message });
             }
 
             // Delete the draft article after publishing
             const deleteSql = "DELETE FROM draft_articles WHERE id = ?";
-            db.run(deleteSql, [draftArticleId], function(err) {
+            db.run(deleteSql, [draftArticleId], function (err) {
                 if (err) {
                     return res.status(500).json({ success: false, message: err.message });
                 }

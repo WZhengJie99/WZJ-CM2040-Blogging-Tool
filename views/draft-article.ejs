@@ -21,11 +21,9 @@
 </head>
 
 <body>
-    <div class="header-links">
-        <a>Draft Article Page</a>
-        <div class="settings">
-            <a href="/author">Back to Author Home</a>
-        </div>
+    <a class="auth-link">Draft Article Page</a>
+    <div class="settings">
+        <button onclick="window.location.href='/author'">Back to Author Home</button>
     </div>
 
     <form id="editDraftForm" action="/author/edit-draft/<%= draft_article.id %>" method="POST">
@@ -53,4 +51,5 @@
         </div>
     </form>
 </body>
+
 </html>

@@ -13,11 +13,15 @@
 </head>
 
 <body>
-    <a>Main Home Page</a>
+    <a class="auth-link">Main Home Page</a>
     <h1>Welcome to the Blogging Tool</h1>
-    <div id="home-links">
-        <a href="/authentication">Author Home Page</a>&emsp;&emsp;&emsp;
-        <a href="/reader">Reader Home Page</a>
+    <div class="home-links">
+        <% if (userLoggedIn) { %>
+            <a class="link" href="/author">Author Home Page</a>&emsp;&emsp;&emsp;
+        <% } else { %>
+            <a class="link" href="/authentication">Author Home Page</a>&emsp;&emsp;&emsp;
+        <% } %>
+        <a class="link" href="/reader">Reader Home Page</a>
     </div>
 </body>
 
