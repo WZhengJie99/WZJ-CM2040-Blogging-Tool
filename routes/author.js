@@ -34,8 +34,8 @@ function fetchAuthorData(req, res, next) {
                     req.articles = articles;
                     req.draft_articles = draft_articles;
                     req.author = author;
-                    req.user = user; // Make sure to add user to the request object
-                    next(); // Call next to proceed to the next middleware or route handler
+                    req.user = user;
+                    next();
                 });
             });
         });
@@ -53,7 +53,7 @@ router.get('/logout', (req, res) => {
             console.error('Error destroying session:', err);
             return res.status(500).json({ error: 'Failed to logout' });
         }
-        res.redirect('/authentication'); // Redirect to the login or home page after logout
+        res.redirect('/authentication');
     });
 });
 
@@ -63,19 +63,28 @@ router.get('/settings', (req, res) => {
         if (err) {
             return res.status(500).send(err.message);
         }
-        res.render('settings', { author });
+        db.get("SELECT * FROM users WHERE id = ?", [req.session.userId], (err, user) => {
+            if (err) {
+                return res.status(500).send(err.message);
+            }
+            res.render('settings', { author, users: user });
+        });
     });
 });
 
 router.post('/settings', (req, res) => {
     const { name, blog_title, blog_subtitle } = req.body;
-    db.run("UPDATE authors SET name = ?, blog_title = ?, blog_subtitle = ? WHERE id = ?", [name, blog_title, blog_subtitle, req.session.userId], function (err) {
+    const updatedBlogTitle = blog_title || '';
+    db.run("UPDATE authors SET name = ?, blog_title = ?, blog_subtitle = ? WHERE id = ?", 
+           [name, updatedBlogTitle, blog_subtitle, req.session.userId], 
+           function (err) {
         if (err) {
             return res.status(500).send(err.message);
         }
         res.redirect('/author/settings');
     });
 });
+
 
 // Delete Article
 router.post('/delete/:id', (req, res) => {

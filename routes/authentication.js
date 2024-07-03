@@ -54,21 +54,37 @@ router.post('/register', [
         return res.status(400).json({ errors: errors.array() });
     }
     const { username, email, password } = req.body;
-    db.get(`SELECT * FROM users WHERE email = ?`, [email], (err, existingUser) => {
+
+    // Check if the email or username already exists
+    db.get(`SELECT * FROM users WHERE email = ? OR username = ?`, [email, username], (err, existingUser) => {
         if (err) {
-            return res.status(500).json({ error: 'Database error' });
+            return res.status(500).json({ error: 'Database error 1' });
         }
         if (existingUser) {
-            return res.status(400).json({ error: 'Email already exists' });
+            if (existingUser.email === email) {
+                return res.status(400).json({ error: 'Email already exists' });
+            }
+            if (existingUser.username === username) {
+                return res.status(400).json({ error: 'Username already exists' });
+            }
         }
 
+        // If email and username do not exist, proceed with user creation
         const { salt, hash } = hashPassword(password);
         db.run(`INSERT INTO users (username, email, password_hash, salt) VALUES (?, ?, ?, ?)`, 
             [username, email, hash, salt], function(err) {
             if (err) {
-                return res.status(500).json({ error: 'Database error' });
+                return res.status(500).json({ error: 'Database error 2' });
             }
-            res.status(200).json({ message: 'User registered successfully' });
+
+            // Insert a blank author entry
+            db.run(`INSERT INTO authors (name, blog_title, blog_subtitle) VALUES (?, ?, ?)`, 
+                ['', '', ''], function(err) {
+                if (err) {
+                    return res.status(500).json({ error: 'Database error 3' });
+                }
+                res.status(200).json({ message: 'User registered successfully' });
+            });
         });
     });
 });

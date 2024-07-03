@@ -28,14 +28,16 @@
             <label for="name">Author Name:</label>
             <input type="text" id="name" name="name" value="<%= author ? author.name : '' %>" required>
             <br>
-            <label for="blog_title">Blog Title:</label>
-            <input type="text" id="blog_title" name="blog_title" value="<%= author ? author.blog_title : '' %>"
-                required>
-            <br>
-            <label for="blog_subtitle">Blog Subtitle:</label>
-            <input type="text" id="blog_subtitle" name="blog_subtitle" value="<%= author ? author.blog_subtitle : '' %>"
-                required>
-            <br>
+            <% if (users.username === 'Admin1') { %>
+                <label for="blog_title">Blog Title:</label>
+                <input type="text" id="blog_title" name="blog_title" value="<%= author ? author.blog_title : '' %>" required>
+                <br>
+                <label for="blog_subtitle">Blog Subtitle:</label>
+                <input type="text" id="blog_subtitle" name="blog_subtitle" value="<%= author ? author.blog_subtitle : '' %>" required>
+                <br>
+            <% } else { %>
+                <p>You do not have permission to edit Blog Title and Subtitle.</p>
+            <% } %>
             <button type="submit">Save</button>
         </form>
     </div>
