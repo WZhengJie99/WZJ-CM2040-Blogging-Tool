@@ -1,6 +1,33 @@
 const express = require('express');
 const router = express.Router();
 
+function checkAuth(req, res, next) {
+    if (req.session && req.session.userId) {
+        next();
+    } else {
+        res.redirect('author-auth');
+    }
+}
+
+router.get('/', checkAuth, (req, res) => {
+    db.all("SELECT * FROM articles WHERE author_id = ? ORDER BY created_at DESC", [req.session.userId], (err, articles) => {
+        if (err) {
+            return res.status(500).send(err.message);
+        }
+        db.all("SELECT * FROM draft_articles WHERE author_id = ? ORDER BY created_at DESC", [req.session.userId], (err, draft_articles) => {
+            if (err) {
+                return res.status(500).send(err.message);
+            }
+            db.get("SELECT * FROM authors WHERE id = ?", [req.session.userId], (err, author) => {
+                if (err) {
+                    return res.status(500).send(err.message);
+                }
+                res.render('author-home', { articles, draft_articles, author });
+            });
+        });
+    });
+});
+
 // Author Home Page
 router.get('/', (req, res) => {
     db.all("SELECT * FROM articles WHERE author_id = ? ORDER BY created_at DESC", [1], (err, articles) => {

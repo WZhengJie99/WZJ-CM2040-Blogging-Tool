@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Author Authentication</title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+<body>
+    <h1>Register</h1>
+    <form action="/authentication/register" method="POST" onsubmit="handleFormSubmission(event, 'register')">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">Register</button>
+    </form>
+
+    <h1>Login</h1>
+    <form action="/authentication/login" method="POST" onsubmit="handleFormSubmission(event, 'login')">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        async function handleFormSubmission(event, formType) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    if (data.errors) {
+                        alert(data.errors.map(error => error.msg).join('\n'));
+                    } else {
+                        throw new Error(data.error || 'An error occurred');
+                    }
+                } else {
+                    alert(data.message);
+                    if (formType === 'login' && data.message === 'User logged in successfully') {
+                        window.location.href = '/author';
+                    } else if (formType === 'register' && data.message === 'User registered successfully') {
+                        window.location.reload();
+                    }
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+    </script>
+</body>
+</html>

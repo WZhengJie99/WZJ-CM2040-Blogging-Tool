@@ -48,6 +48,14 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY(article_id) REFERENCES articles(id)
 );
 
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    salt TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insert default data (if necessary here)
 
 INSERT INTO authors (name, blog_title, blog_subtitle) VALUES ('Wong Zheng Jie', 'My Adventures', 'Hunting for Rabbits');
