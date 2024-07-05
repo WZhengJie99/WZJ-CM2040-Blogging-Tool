@@ -56,10 +56,14 @@
             <button onclick="shareArticle(<%= article.id %>, '<%= article.title %>');">Share</button>
         </div>
 
+        <div class="comments-section"></div>
         <p>Comments:</p>
-        <form action="/reader/article/<%= article.id %>/comment" method="post">
+        <form action="/reader/article/<%= article.id %>/comment" method="post" onsubmit="return validateComment()">
             <input type="text" name="commenter_name" placeholder="Your name"><br><br>
-            <textarea name="comment" placeholder="Your comment"></textarea><br><br>
+            <textarea name="comment" id="comment" placeholder="Your comment"
+                oninput="checkCharacterLimit()"></textarea>
+                <a>Word count: </a>
+            <a id="charCount">0/100</a><br><br>
             <button type="submit">Submit Comment</button>
         </form>
         <br>
@@ -72,11 +76,34 @@
                 </li>
                 <% }) %>
         </ul>
+
         <br>
         <a class="link" href="/reader">Back to Reader Home Page</a>
     </div>
+    </div>
 
     <script>
+        const charLimit = 100;
+
+        function checkCharacterLimit() {
+            const commentField = document.getElementById('comment');
+            const charCount = document.getElementById('charCount');
+            const currentLength = commentField.value.length;
+            charCount.textContent = `${currentLength}/${charLimit}`;
+            if (currentLength > charLimit) {
+                commentField.value = commentField.value.substring(0, charLimit-1);
+            }
+        }
+
+        function validateComment() {
+            const commentField = document.getElementById('comment');
+            if (commentField.value.length > charLimit) {
+                alert('Comment exceeds the character limit.');
+                return false;
+            }
+            return true;
+        }
+
         document.getElementById('like-button').addEventListener('click', function () {
             fetch('/reader/article/<%= article.id %>/like', {
                 method: 'POST',
