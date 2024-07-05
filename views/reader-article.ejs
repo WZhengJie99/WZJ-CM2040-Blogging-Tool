@@ -68,13 +68,13 @@
         </form>
         <br>
         <ul class="horizontal-list">
-            <% comments.forEach(comment=> { %>
+            <% comments.forEach(comment => { %>
                 <li>
-                    <%= comment.commenter_name %>:<br><br>
-                        <%= comment.comment %><br><br>
-                            <%= comment.created_at %>
+                    <span class="comment-name"><%= comment.commenter_name %>:</span><br><br>
+                    <span class="comment-content"><%= comment.comment %></span><br><br>
+                    <span class="comment-date"><%= comment.created_at %></span>
                 </li>
-                <% }) %>
+            <% }) %>
         </ul>
 
         <br>
