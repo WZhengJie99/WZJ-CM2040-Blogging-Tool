@@ -70,8 +70,8 @@
         <ul class="horizontal-list">
             <% comments.forEach(comment => { %>
                 <li>
-                    <span class="comment-name"><%= comment.commenter_name %>:</span><br><br>
-                    <span class="comment-content"><%= comment.comment %></span><br><br>
+                    <span class="comment-name"><%= comment.commenter_name %>:</span><br>
+                    <span class="comment-content"><%= comment.comment %></span><br>
                     <span class="comment-date"><%= comment.created_at %></span>
                 </li>
             <% }) %>
