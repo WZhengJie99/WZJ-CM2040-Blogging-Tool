@@ -12,6 +12,7 @@
     "start": "node index.js"
   },
   "author": "Simon Katan",
+  "Co-author": "Wong Zheng Jie",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.8",
