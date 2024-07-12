@@ -87,10 +87,11 @@ router.post('/settings', (req, res) => {
 
 
 // Delete Article
+// Assistance
 router.post('/delete/:id', (req, res) => {
     const articleId = req.params.id;
 
-    // Start a transaction
+    // Start transaction
     db.serialize(() => {
         db.run("BEGIN TRANSACTION");
 

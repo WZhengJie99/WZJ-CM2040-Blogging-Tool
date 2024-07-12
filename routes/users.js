@@ -39,6 +39,7 @@ router.get("/add-user", (req, res) => {
 
 /**
  * @desc Add a new user to the database based on data from the submitted form
+ * Template
  */
 router.post("/add-user", (req, res, next) => {
     // Define the query

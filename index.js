@@ -1,6 +1,7 @@
 /**
 * index.js
 * This is your main app entry point
+* Editted by Wong Zheng Jie
 */
 
 // Set up express, bodyparser and EJS

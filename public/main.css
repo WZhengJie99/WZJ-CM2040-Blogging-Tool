@@ -152,6 +152,7 @@ textarea {
 }
 
 /* reader-article.ejs */
+/* Comment Assistance */
 ul.horizontal-list {
     display: flex;
     list-style-type: none;

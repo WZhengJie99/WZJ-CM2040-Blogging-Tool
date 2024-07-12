@@ -61,9 +61,7 @@ CREATE TABLE users (
 
 INSERT INTO authors (name, blog_title, blog_subtitle) VALUES ('Wong Zheng Jie', 'My Adventures', 'Hunting for Rabbits');
 
--- INSERT INTO draft_articles (title, subtitle, content, author_id) VALUES ('Draft 1', 'Next Town', 'A crime happened here!', 1);
-
--- INSERT INTO articles (title, subtitle, content, author_id) VALUES ('Magnolia', 'Starting Town', 'I woke up in a forest surrounded by magnolia flowers.', 1);
+-- Template
 
 -- Set up three users
 -- INSERT INTO users ('user_name') VALUES ('Simon Star');

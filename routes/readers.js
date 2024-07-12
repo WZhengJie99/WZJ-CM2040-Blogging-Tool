@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const db = global.db; // Ensure db connection is properly set up
+const db = global.db;
 
 // Reader Home Page
 router.get('/', (req, res) => {
     const articlesSql = "SELECT * FROM articles WHERE published_at IS NOT NULL ORDER BY published_at DESC";
     const authorSql = "SELECT * FROM authors LIMIT 1";
 
-    // Use Promise to handle asynchronous operations
+    // Use Promise for asynchronous operations
     Promise.all([
         new Promise((resolve, reject) => {
             db.all(articlesSql, [], (err, articles) => {
@@ -91,7 +91,7 @@ router.post('/article/:id/like', (req, res) => {
             return res.status(500).json({ success: false, message: err.message });
         }
 
-        // Retrieve the updated like count
+        // Retrieve updated like count
         db.get("SELECT likes FROM articles WHERE id = ?", [articleId], (err, article) => {
             if (err) {
                 return res.status(500).json({ success: false, message: err.message });
