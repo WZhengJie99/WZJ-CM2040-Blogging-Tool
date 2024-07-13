@@ -21,7 +21,7 @@ const sqlite3 = require('sqlite3').verbose();
 global.db = new sqlite3.Database('./database.db', function(err) {
     if (err) {
         console.error(err);
-        process.exit(1); // bail out we can't connect to the DB
+        process.exit(1); // get out we can't connect to the DB
     } else {
         console.log("Database connected");
         global.db.run("PRAGMA foreign_keys=ON"); // tell SQLite to pay attention to foreign key constraints
@@ -30,7 +30,7 @@ global.db = new sqlite3.Database('./database.db', function(err) {
 
 // Session management
 app.use(session({
-    secret: 'your_secret_key',
+    secret: 'Wong_Zheng_Jie_secret_key',
     resave: false,
     saveUninitialized: true
 }));
