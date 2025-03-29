@@ -1,23 +1,28 @@
 # Blogging Tool
+A Blogging website with author authentication.
 
 ## Setup
+1. Clone the repository:
+   ```
+   git clone https://github.com/WZhengJie99/WZJ-CM2040-Blogging-Tool.git
+   ```
 
-1. Install dependencies:
+2. Install dependencies:
     ```sh
     npm install
     ```
 
-2. build the database:
+3. build the database:
     ```sh
     npm run build-db
     ```
 
-3. Run the application:
+4. Run the application:
     ```sh
     npm run start
     ```
 
-4. Open your browser and navigate to `http://localhost:3000`.
+5. Open your browser and navigate to `http://localhost:3000`.
 
 ## Dependencies
 
